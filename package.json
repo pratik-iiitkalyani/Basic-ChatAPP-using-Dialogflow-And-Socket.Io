@@ -9,6 +9,7 @@
   "author": "Pratik",
   "license": "ISC",
   "dependencies": {
+    "cors": "^2.8.5",
     "dialogflow": "^0.10.2",
     "express": "^4.15.2",
     "socket.io": "^2.2.0"

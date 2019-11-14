@@ -1,11 +1,21 @@
 const App = require('express')();
 const Http = require('http').createServer(App);
 const Io = require('socket.io')(Http);
+const cors = require('cors');
+
 
 const Dialogflow = require("./dialogflow")
 
 App.get('/', function(req, res){
   res.sendFile(__dirname + '/index.html');
+});
+
+Io.on('connection', (socket) => {
+    console.log('user connected');
+
+    socket.on('new-message', (message) => {
+      console.log(message);
+    });
 });
 
 Io.on('connection', function(socket){
@@ -17,29 +27,18 @@ Http.listen(3000, function(){
 });
 
 Io.on('connection', function(socket){
-  console.log('a user connected');
   socket.on('disconnect', function(){
     console.log('user disconnected');
   });
 });
 
-Io.on('connection', function(socket){
-  	socket.on('chat message', function(msg){
-    console.log('message: ' + msg);
-    socket.emit(msg);
 
-
-  });
-});
-
-
-// io.emit('some event', { for: 'everyone' });
-
-// io.on('connection', function(socket){
-// 	console.log("qdsg")
-//   socket.broadcast.emit();
+// Io.on('connection', function(socket){
+//   	socket.on('chat message', function(msg){
+//       console.log('message:'+ msg);
+//       socket.emit('reply', msg);
+//   });
 // });
-
 
 // send messag
 Io.on('connection', function(socket){
@@ -47,8 +46,7 @@ Io.on('connection', function(socket){
     Io.emit('chat message', msg);
     console.log(msg)
     const res = await Dialogflow.dig(msg);
-    console.log("response 1111111", res)
-    socket.emit('response message', res)
+    socket.emit('reply', res)
   });
 });
 
